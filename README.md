@@ -1,5 +1,11 @@
 # pipeworks_ipc
 
+[![CI](https://github.com/pipe-works/pipeworks_ipc/actions/workflows/ci.yml/badge.svg)](https://github.com/pipe-works/pipeworks_ipc/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/pipe-works/pipeworks_ipc/graph/badge.svg?branch=main)](https://codecov.io/gh/pipe-works/pipeworks_ipc)
+[![docs](https://readthedocs.org/projects/pipeworks-ipc/badge/?version=latest)](https://pipeworks-ipc.readthedocs.io/en/latest/)
+[![python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
+[![license](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
+
 Reusable, deterministic IPC (Interpretive Provenance Chain) hashing utilities for Pipe-Works projects.
 
 ## What this package provides
@@ -27,6 +33,7 @@ python -V
 ```bash
 pip install -e .
 pip install -e ".[dev]"
+pip install -e ".[docs]"
 ```
 
 ## Pre-commit hooks
@@ -40,6 +47,20 @@ pre-commit run --all-files
 
 ```bash
 pytest -v
+```
+
+## Documentation
+
+Build locally:
+
+```bash
+make -C docs html
+```
+
+Open:
+
+```bash
+docs/build/html/index.html
 ```
 
 ## Example
