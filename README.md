@@ -5,6 +5,9 @@
 [![docs](https://readthedocs.org/projects/pipeworks-ipc/badge/?version=latest)](https://pipeworks-ipc.readthedocs.io/en/latest/)
 [![python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
 [![license](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
+[![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![lint: ruff](https://img.shields.io/badge/lint-ruff-46B1E8?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 Reusable, deterministic IPC (Interpretive Provenance Chain) hashing utilities for Pipe-Works projects.
 
