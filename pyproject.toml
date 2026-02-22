@@ -34,6 +34,10 @@ dev = [
     "pre-commit>=4.0",
     "codespell>=2.3.0",
 ]
+docs = [
+    "sphinx>=8.1.3,<9.0",
+    "sphinx-rtd-theme>=3.0.2,<4.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/pipe-works/pipeworks_ipc"
@@ -75,3 +79,11 @@ disallow_untyped_defs = false
 [tool.bandit]
 exclude_dirs = ["tests"]
 skips = ["B101"]
+
+[tool.coverage.run]
+branch = true
+source = ["pipeworks_ipc"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

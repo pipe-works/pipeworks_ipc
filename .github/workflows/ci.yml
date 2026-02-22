@@ -23,7 +23,8 @@ jobs:
       python-versions: '["3.12", "3.13"]'
       coverage-threshold: 95
       run-security: true
-      run-docs: false
+      run-docs: true
+      docs-warning-threshold: 0
       test-os: '["ubuntu-latest", "macos-latest", "windows-latest"]'
       requires-models: false
     secrets: inherit
