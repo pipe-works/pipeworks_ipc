@@ -9,4 +9,5 @@ Reusable, deterministic IPC hashing primitives for Pipe-Works projects.
 
    overview
    usage
+   project_integration
    api

@@ -1,6 +1,9 @@
 Usage
 =====
 
+For a full consumer integration guide (including migration from copied hashing code and
+manifest persistence), see :doc:`project_integration`.
+
 Install for development:
 
 .. code-block:: bash
