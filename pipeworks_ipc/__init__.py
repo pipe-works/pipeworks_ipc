@@ -19,4 +19,4 @@ __all__ = [
     "payload_hash",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
