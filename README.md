@@ -39,6 +39,52 @@ pip install -e ".[dev]"
 pip install -e ".[docs]"
 ```
 
+## Install in Other Projects (Before PyPI)
+
+Use one of these approaches when ``pipeworks-ipc`` is not yet published to PyPI.
+
+Local path (editable):
+
+```bash
+pip install -e /path/to/pipeworks_ipc
+```
+
+GitHub tag:
+
+```bash
+pip install "pipeworks-ipc @ git+https://github.com/pipe-works/pipeworks_ipc.git@v0.1.1"
+```
+
+GitHub commit SHA (strict reproducibility):
+
+```bash
+pip install "pipeworks-ipc @ git+https://github.com/pipe-works/pipeworks_ipc.git@<commit-sha>"
+```
+
+For consumer ``pyproject.toml`` dependencies before PyPI publication:
+
+```toml
+[project]
+dependencies = [
+  "pipeworks-ipc @ git+https://github.com/pipe-works/pipeworks_ipc.git@v0.1.1"
+]
+```
+
+## When to Publish to PyPI
+
+Publish when all of these are true:
+
+- at least one consumer project uses ``pipeworks-ipc`` in production-like flow
+- IPC semantics are stable and deterministic tests are green
+- CI/docs/release automation are consistently passing
+- you want to stop relying on local paths and Git URL dependencies
+
+Recommended progression:
+
+1. integrate in a consumer project and stabilize
+2. release to TestPyPI first
+3. release to PyPI
+
 ## Pre-commit hooks
 
 ```bash

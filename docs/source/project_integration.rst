@@ -26,13 +26,25 @@ For local development (editable install):
 
    pip install -e /path/to/pipeworks_ipc
 
-For a normal project dependency in ``pyproject.toml``:
+For Git-based installation (before PyPI publication):
+
+.. code-block:: bash
+
+   pip install "pipeworks-ipc @ git+https://github.com/pipe-works/pipeworks_ipc.git@v0.1.1"
+
+For strict reproducibility, pin a commit SHA:
+
+.. code-block:: bash
+
+   pip install "pipeworks-ipc @ git+https://github.com/pipe-works/pipeworks_ipc.git@<commit-sha>"
+
+For a consumer ``pyproject.toml`` dependency before PyPI:
 
 .. code-block:: toml
 
    [project]
    dependencies = [
-     "pipeworks-ipc>=0.1.0",
+     "pipeworks-ipc @ git+https://github.com/pipe-works/pipeworks_ipc.git@v0.1.1",
    ]
 
 Step 2: Centralize IPC creation in one helper
@@ -154,3 +166,19 @@ Add at least one integration test in the consumer project:
 
 This gives you a reusable, testable provenance layer without re-coding IPC internals in
 every repository.
+
+When to publish to PyPI
+-----------------------
+
+Publish when these are all true:
+
+- at least one consumer project has stable integration
+- deterministic IPC tests are passing consistently
+- CI/docs/release automation are all green
+- Git URL or local path installs are becoming operational friction
+
+Practical rollout:
+
+1. stabilize one consumer integration
+2. publish to TestPyPI
+3. publish to PyPI

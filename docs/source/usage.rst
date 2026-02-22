@@ -16,6 +16,12 @@ Install with docs tooling:
 
    pip install -e ".[docs]"
 
+Install in a different project before PyPI publication:
+
+.. code-block:: bash
+
+   pip install "pipeworks-ipc @ git+https://github.com/pipe-works/pipeworks_ipc.git@v0.1.1"
+
 Quick example:
 
 .. code-block:: python
