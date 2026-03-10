@@ -51,11 +51,13 @@ def _normalise_output(text: str) -> str:
 def _normalise_policy_relative_path(relative_path: str) -> str:
     """Normalize and validate policy-relative paths used in hash payloads."""
 
-    normalized = PurePosixPath(relative_path.replace("\\", "/")).as_posix().lstrip("./")
+    as_posix = PurePosixPath(relative_path.replace("\\", "/")).as_posix()
+    if as_posix.startswith("../") or "/../" in f"/{as_posix}":
+        raise ValueError(f"Policy relative path must not traverse upwards: {relative_path!r}")
+
+    normalized = as_posix.lstrip("./")
     if normalized in {"", "."}:
         raise ValueError("Policy relative path must not be empty")
-    if normalized.startswith("../") or "/../" in f"/{normalized}":
-        raise ValueError(f"Policy relative path must not traverse upwards: {relative_path!r}")
     return normalized
 
 

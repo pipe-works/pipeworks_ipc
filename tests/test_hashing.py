@@ -279,6 +279,16 @@ class TestPolicyTreeHashing:
         assert left != right_path
         assert left != right_content
 
+    @pytest.mark.parametrize("relative_path", ["", ".", "./", "////"])
+    def test_compute_policy_file_hash_rejects_empty_relative_path(self, relative_path: str) -> None:
+        with pytest.raises(ValueError, match="must not be empty"):
+            compute_policy_file_hash(relative_path, b"content")
+
+    @pytest.mark.parametrize("relative_path", ["../x.txt", "image/../x.txt"])
+    def test_compute_policy_file_hash_rejects_parent_traversal(self, relative_path: str) -> None:
+        with pytest.raises(ValueError, match="must not traverse upwards"):
+            compute_policy_file_hash(relative_path, b"content")
+
     def test_compute_policy_tree_hash_is_order_independent(self) -> None:
         entries_a = [
             PolicyHashEntry(relative_path="image/prompts/a.txt", content_hash="h1"),
