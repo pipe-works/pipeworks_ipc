@@ -7,11 +7,16 @@ from dataclasses import dataclass
 import pytest
 
 from pipeworks_ipc.hashing import (
+    DirectoryHashEntry,
+    PolicyHashEntry,
     _normalise_output,
     _normalise_system_prompt,
     compute_ipc_id,
     compute_output_hash,
     compute_payload_hash,
+    compute_policy_directory_hashes,
+    compute_policy_file_hash,
+    compute_policy_tree_hash,
     compute_system_prompt_hash,
     payload_hash,
 )
@@ -258,3 +263,80 @@ class TestPayloadHash:
     def test_raises_when_model_dump_not_dict(self) -> None:
         with pytest.raises(TypeError):
             payload_hash(DummyPayloadBad())
+
+
+class TestPolicyTreeHashing:
+    def test_compute_policy_file_hash_is_deterministic(self) -> None:
+        payload = b"text: |\n  goblin\n"
+        first = compute_policy_file_hash("image/blocks/species/goblin_v1.yaml", payload)
+        second = compute_policy_file_hash("image/blocks/species/goblin_v1.yaml", payload)
+        assert first == second
+
+    def test_compute_policy_file_hash_changes_with_path_or_content(self) -> None:
+        left = compute_policy_file_hash("image/prompts/base.txt", b"one")
+        right_path = compute_policy_file_hash("image/prompts/alt.txt", b"one")
+        right_content = compute_policy_file_hash("image/prompts/base.txt", b"two")
+        assert left != right_path
+        assert left != right_content
+
+    @pytest.mark.parametrize("relative_path", ["", ".", "./", "////"])
+    def test_compute_policy_file_hash_rejects_empty_relative_path(self, relative_path: str) -> None:
+        with pytest.raises(ValueError, match="must not be empty"):
+            compute_policy_file_hash(relative_path, b"content")
+
+    @pytest.mark.parametrize("relative_path", ["../x.txt", "image/../x.txt"])
+    def test_compute_policy_file_hash_rejects_parent_traversal(self, relative_path: str) -> None:
+        with pytest.raises(ValueError, match="must not traverse upwards"):
+            compute_policy_file_hash(relative_path, b"content")
+
+    def test_compute_policy_tree_hash_is_order_independent(self) -> None:
+        entries_a = [
+            PolicyHashEntry(relative_path="image/prompts/a.txt", content_hash="h1"),
+            PolicyHashEntry(relative_path="image/prompts/b.txt", content_hash="h2"),
+        ]
+        entries_b = list(reversed(entries_a))
+        assert compute_policy_tree_hash(entries_a) == compute_policy_tree_hash(entries_b)
+
+    def test_compute_policy_tree_hash_changes_on_single_entry_change(self) -> None:
+        baseline = [
+            PolicyHashEntry(relative_path="image/prompts/a.txt", content_hash="h1"),
+            PolicyHashEntry(relative_path="image/prompts/b.txt", content_hash="h2"),
+        ]
+        changed = [
+            PolicyHashEntry(relative_path="image/prompts/a.txt", content_hash="h1"),
+            PolicyHashEntry(relative_path="image/prompts/b.txt", content_hash="h3"),
+        ]
+        assert compute_policy_tree_hash(baseline) != compute_policy_tree_hash(changed)
+
+    def test_compute_policy_directory_hashes_is_stable_and_scoped(self) -> None:
+        entries = [
+            PolicyHashEntry(relative_path="image/prompts/a.txt", content_hash="h1"),
+            PolicyHashEntry(relative_path="image/prompts/nested/b.txt", content_hash="h2"),
+            PolicyHashEntry(relative_path="translation/prompts/c.txt", content_hash="h3"),
+        ]
+
+        result_a = compute_policy_directory_hashes(entries)
+        result_b = compute_policy_directory_hashes(list(reversed(entries)))
+        assert result_a == result_b
+
+        by_path = {entry.path: entry for entry in result_a}
+        assert by_path["image"].file_count == 2
+        assert by_path["image/prompts"].file_count == 2
+        assert by_path["image/prompts/nested"].file_count == 1
+        assert by_path["translation"].file_count == 1
+
+        changed_entries = [
+            PolicyHashEntry(relative_path="image/prompts/a.txt", content_hash="changed"),
+            PolicyHashEntry(relative_path="image/prompts/nested/b.txt", content_hash="h2"),
+            PolicyHashEntry(relative_path="translation/prompts/c.txt", content_hash="h3"),
+        ]
+        changed = {entry.path: entry for entry in compute_policy_directory_hashes(changed_entries)}
+        assert changed["image"].hash != by_path["image"].hash
+        assert changed["translation"].hash == by_path["translation"].hash
+
+
+class TestPolicyHashEntryDataclasses:
+    def test_directory_hash_entry_is_comparable_for_stable_assertions(self) -> None:
+        first = DirectoryHashEntry(path="image", file_count=1, hash="abc")
+        second = DirectoryHashEntry(path="image", file_count=1, hash="abc")
+        assert first == second
