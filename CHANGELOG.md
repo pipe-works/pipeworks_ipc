@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/pipe-works/pipeworks_ipc/compare/pipeworks-ipc-v0.1.2...pipeworks-ipc-v0.1.3) (2026-03-14)
+
+
+### Fixes
+
+* **packaging:** publish py.typed marker for mypy consumers ([#10](https://github.com/pipe-works/pipeworks_ipc/issues/10)) ([8dbd40f](https://github.com/pipe-works/pipeworks_ipc/commit/8dbd40fe60896748ae7406f68a667a4adf99aab8))
+
 ## [0.1.2](https://github.com/pipe-works/pipeworks_ipc/compare/pipeworks-ipc-v0.1.1...pipeworks-ipc-v0.1.2) (2026-03-10)
 
 
