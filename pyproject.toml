@@ -47,6 +47,9 @@ Issues = "https://github.com/pipe-works/pipeworks_ipc/issues"
 [tool.setuptools]
 include-package-data = false
 
+[tool.setuptools.package-data]
+pipeworks_ipc = ["py.typed"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["pipeworks_ipc*"]
